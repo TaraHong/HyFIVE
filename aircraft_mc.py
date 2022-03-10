@@ -21,8 +21,9 @@ lift_to_drag_det = params.LIFT_TO_DRAG
 SFC_hybrid_det = params.SFC_HYBRID
 mission_profile_det = params.LANDING_RATIO
 fc_mass_det = params.FCS_MASS
+print("FCS Mass Det: ", fc_mass_det)
 
-fleet = ['F2C3H2L3', 'F1C1H2L3', 'F2C4H2L1', 'F1C1H2L2', 'F1C1H1L3', 'F3C5H3L3']#List 
+fleet = ['F2C4H2L1', 'F1C3H1L2', 'F2C2H1L1', 'F2C3H2L3', 'F1C3H1L3', 'F1C1H2L3', 'F3C5H3L3']#List 
 det = create_aircrafts(fleet)
 print(det)
 
@@ -99,11 +100,14 @@ model_results = pd.DataFrame()
 
 fc_mass_mc = fc_mass_pdf(triangular, 1100, 1500, 1300)
 mission_profile_mc = mission_profile_pdf(triangular, 0.2, 1, 0.34 )
-lift_to_drag_mc = lift_to_drag_pdf(triangular, 0,20,14)
+lift_to_drag_mc_L1 = lift_to_drag_pdf(triangular, 0,22,14)
+lift_to_drag_mc_L2 = lift_to_drag_pdf(triangular, 0,18,14)
+lift_to_drag_mc_L3 = lift_to_drag_pdf(triangular, 14,15,14)
 SFC_hybrid_mc = SFC_hybrid_pdf(triangular, 12, 19, 14.75)
 f_trl_mc = trl_pdf(triangular, 5,8,6)
 h_trl_mc = trl_pdf(triangular, 7,8,7.5)
-c_trl_mc = trl_pdf(triangular, 4,9,6)
+c_trl_mc_hybrid = trl_pdf(triangular, 4,9,6)
+c_trl_mc_electric = trl_pdf(triangular, 3,8,6)
 l_trl_mc = trl_pdf(triangular, 2,7,4)
 
 #TODO: For L3, do not use uncertainties for Lift to Drag
@@ -114,15 +118,19 @@ for key in decisions:
     for i in range(2000):
         params.FCS_MASS = fc_mass_mc()        
         params.LANDING_RATIO = mission_profile_mc()
-        if decisions[key].location != "L3":
-            params.LIFT_TO_DRAG = lift_to_drag_mc()
+        if decisions[key].location == "L1": #L1 and L2
+            params.LIFT_TO_DRAG = lift_to_drag_mc_L1()
+        elif decisions[key].location == "L2":
+            params.LIFT_TO_DRAG = lift_to_drag_mc_L2()
+        else: #L3
+            params.LIFT_TO_DRAG = lift_to_drag_mc_L3()
         params.SFC_HYBRID = SFC_hybrid_mc()
         params.trl["F1"] = f_trl_mc()
         params.trl["F2"] = f_trl_mc()
-        params.trl["C1"] = c_trl_mc()
-        params.trl["C2"] = c_trl_mc()
-        params.trl["C3"] = c_trl_mc()
-        params.trl["C4"] = c_trl_mc()
+        params.trl["C1"] = c_trl_mc_hybrid()
+        params.trl["C2"] = c_trl_mc_hybrid()
+        params.trl["C3"] = c_trl_mc_electric()
+        params.trl["C4"] = c_trl_mc_electric()
         params.trl["H1"] = h_trl_mc()
         params.trl["H2"] = h_trl_mc()
         params.trl["L1"] = l_trl_mc()
@@ -193,7 +201,7 @@ fig.add_trace(
 
 fig.show()
 
-fig.write_html("tradespace_mc_full.html")
+fig.write_html("tradespace_mc_test_2.html")
 #fig.show()
 
 
