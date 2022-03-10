@@ -107,13 +107,15 @@ c_trl_mc = trl_pdf(triangular, 4,9,6)
 l_trl_mc = trl_pdf(triangular, 2,7,4)
 
 #TODO: For L3, do not use uncertainties for Lift to Drag
+
 for key in decisions:
 
 
     for i in range(2000):
-        params.FCS_MASS = fc_mass_mc()
+        params.FCS_MASS = fc_mass_mc()        
         params.LANDING_RATIO = mission_profile_mc()
-        params.LIFT_TO_DRAG = lift_to_drag_mc()
+        if decisions[key].location != "L3":
+            params.LIFT_TO_DRAG = lift_to_drag_mc()
         params.SFC_HYBRID = SFC_hybrid_mc()
         params.trl["F1"] = f_trl_mc()
         params.trl["F2"] = f_trl_mc()
@@ -159,7 +161,9 @@ import plotly.graph_objects as go
 new_df = model_results
 new_df['Location'] = new_df.Name.str[7:9]
 new_df['Config'] = new_df.Name.str[2:4]
-fig = px.scatter(new_df, x="AVG TRL", y="Total Utility", color = "Name", hover_name = new_df.Name, template = 'seaborn')
+fig = px.scatter(new_df, x="AVG TRL", y="Total Utility", color = "Name", 
+                hover_name = new_df.Name, template = 'seaborn',
+                marginal_y='violin', marginal_x='box')
 
 fig.update_traces(marker=dict(size=5, opacity = 0.3,
                                 line=dict(width=0.5,
@@ -201,7 +205,7 @@ fig.write_html("tradespace_mc_full.html")
 
 #%%
 ### NOT USED
-det_F2C3H2L3 = det.loc[det['Name'] == 'F2C3H2L3']
+det_F2C3H2L3 = det.loc[det['Name'] == 'F3C5H3L3']
 det_util = det_F2C3H2L3['Total Utility']
 def plot_mc_results(mc_results, x_label):
     plt.hist(mc_results, bins=100, density=True)
@@ -217,7 +221,7 @@ def plot_mc_results(mc_results, x_label):
     plt.legend(loc='lower right')
     plt.show()
 
-model_results_F2C3H2L3 = model_results.loc[model_results['Name'] == 'F2C3H2L3']
+model_results_F2C3H2L3 = model_results.loc[model_results['Name'] == 'F3C5H3L3']
 
 plot_mc_results(model_results_F2C3H2L3["Total Utility"], 'Total_Utility_MC')
 #for key in decisions:
