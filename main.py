@@ -5,6 +5,13 @@ import plotly.express as px
 import plotly
 import pandas as pd
 import plotly.io as pio
+from distribution import Variable
+import numpy as np
+from random import random,uniform,triangular,betavariate,expovariate,seed
+from random import gammavariate,gauss,lognormvariate,normalvariate,vonmisesvariate
+from random import paretovariate, weibullvariate
+import matplotlib.pyplot as plt
+
 import warnings
 warnings.filterwarnings("ignore")
 #fleet choice
@@ -28,7 +35,9 @@ def create_aircrafts(fleet):
         pax_utility = decisions[key].calc_pax_utility()
         range = decisions[key].calc_range()
         range_utility = decisions[key].calc_range_utility()
-        total_utility = 0.25 * (CO2_utility + pax_utility + range_utility + rel )
+        #total_utility = 0.25 * (CO2_utility + pax_utility + range_utility + rel )
+
+        total_utility = decisions[key].calc_total_utility()
         avg_trl = decisions[key].calc_AVG_TRL()
         
         result = {'Name':key,
@@ -55,12 +64,12 @@ def create_HyFIVE(aircraft_name):
     aircraft = Aircraft(aircraft_name)
     return aircraft
 
-def plot_tradespace(tradespace_parameters):
+def plot_tradespace(tradespace_parameters, color_code):
     new_df = tradespace_parameters
     new_df['Location'] = new_df.Name.str[7:9]
     new_df['Config'] = new_df.Name.str[2:4]
-    fig = px.scatter(new_df, x="AVG TRL", y="Total Utility", color = "Location", hover_name = new_df.Name, template = 'seaborn')
-    fig.update_traces(marker=dict(size=12,
+    fig = px.scatter(new_df, x="AVG TRL", y="Total Utility", color = color_code, hover_name = new_df.Name, template = 'seaborn')
+    fig.update_traces(marker=dict(size=12, opacity = 0.5,
                                   line=dict(width=2,
                                             color='DarkSlateGrey')),
                       selector=dict(mode='markers'))
@@ -82,7 +91,13 @@ if __name__=="__main__":
     # List_of_AD = params.AD
     # Subset_AD = params.AD[0:4]
     # Custom_AD = []
+
     tradespace_parameters = main(List_of_AD)
     print(tradespace_parameters)
-    plot_tradespace(tradespace_parameters)
+    plot_tradespace(tradespace_parameters, "Location")
 
+    # d328 = create_HyFIVE("F1C1H1L3")
+    # print(d328.calc_total_utility())
+    # print(d328.calc_AVG_TRL())
+    # x = Variable(normalvariate,0,1)
+    # print(x())

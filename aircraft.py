@@ -337,6 +337,14 @@ class Aircraft():
         avg_trl = 0.2 * fcs_trl + 0.25 * config_trl + 0.2 * hex_trl + 0.25 * location_trl
         return avg_trl
 
+    def calc_total_utility(self):
+        CO2_utility = self.utility_co2()
+        pax_utility = self.calc_pax_utility()
+        range_utility = self.calc_range_utility()
+        rel = self.calc_reliability()
+
+        total_utility = 0.25 * (CO2_utility + pax_utility + range_utility + rel )
+        return total_utility
 
 
 
