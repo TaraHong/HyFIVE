@@ -334,7 +334,7 @@ class Aircraft():
         hex_trl = trl[hex]
         location_trl = trl[location]
 
-        avg_trl = 0.2 * fcs_trl + 0.25 * config_trl + 0.2 * hex_trl + 0.25 * location_trl
+        avg_trl = 0.25 * fcs_trl + 0.25 * config_trl + 0.25 * hex_trl + 0.25 * location_trl
         return avg_trl
 
     def calc_total_utility(self):

@@ -69,7 +69,7 @@ def plot_tradespace(tradespace_parameters, color_code):
     new_df['Location'] = new_df.Name.str[7:9]
     new_df['Config'] = new_df.Name.str[2:4]
     fig = px.scatter(new_df, x="AVG TRL", y="Total Utility", color = color_code, hover_name = new_df.Name, template = 'seaborn')
-    fig.update_traces(marker=dict(size=12, opacity = 0.5,
+    fig.update_traces(marker=dict(size=12, opacity = 0.8,
                                   line=dict(width=2,
                                             color='DarkSlateGrey')),
                       selector=dict(mode='markers'))

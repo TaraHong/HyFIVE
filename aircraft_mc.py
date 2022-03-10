@@ -90,6 +90,7 @@ def trl_pdf(dist, *args):
 #DECIDE SIMULATION ITERATIONS
 seed(1)
 
+#L4 -> L/D = 14
 decisions = {k: Aircraft(k) for k in fleet}
 aircraft_mc = Aircraft('F1C1H1L2')
 aircraft_mc_utility_results =[]
@@ -200,7 +201,9 @@ fig.write_html("tradespace_mc_full.html")
 
 #%%
 ### NOT USED
-def plot_mc_results(aircraft, mc_results, x_label):
+det_F2C3H2L3 = det.loc[det['Name'] == 'F2C3H2L3']
+det_util = det_F2C3H2L3['Total Utility']
+def plot_mc_results(mc_results, x_label):
     plt.hist(mc_results, bins=100, density=True)
     plt.xlabel(x_label)
     plt.ylabel('PDF')
@@ -210,13 +213,16 @@ def plot_mc_results(aircraft, mc_results, x_label):
     plt.ylabel('CDF')
     plt.vlines(np.array(mc_results).mean(),0,1,color='r',label='Monte Carlo Average')
     plt.scatter(np.median(np.array(mc_results)),0.5,c='r',label='Monte Carlo Median')
-    plt.vlines(aircraft.calc_total_utility(),0,1,color='k',linestyle='--',label='Deterministic')
+    plt.vlines(det_util,0,1,color='k',linestyle='--',label='Deterministic')
     plt.legend(loc='lower right')
     plt.show()
 
-for key in decisions:
-    plot_mc_results(Aircraft('F1C1H1L2'), aircraft_mc_utility_results, 'Total_Utility_MC')
-    plot_mc_results(Aircraft('F1C1H1L2'), aircraft_mc_trl_results, 'AVG TRL_MC')
+model_results_F2C3H2L3 = model_results.loc[model_results['Name'] == 'F2C3H2L3']
+
+plot_mc_results(model_results_F2C3H2L3["Total Utility"], 'Total_Utility_MC')
+#for key in decisions:
+#    plot_mc_results(Aircraft('F1C1H1L2'), aircraft_mc_utility_results, 'Total_Utility_MC')
+#    plot_mc_results(Aircraft('F1C1H1L2'), aircraft_mc_trl_results, 'AVG TRL_MC')
 
 
 # %%
