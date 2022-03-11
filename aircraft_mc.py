@@ -29,7 +29,7 @@ print(det)
 
 #det_mod_total_utility = aircraft_mc.calc_total_utility()
 
-
+#%%
 def fc_mass_pdf(dist, *args):
     fc_mass_mc = Variable(dist, *args)
     fc_mass_distribution = []
@@ -109,7 +109,7 @@ aircraft_mc_utility_results =[]
 aircraft_mc_trl_results = []
 model_results = pd.DataFrame()
 
-battery_mass_mc = battery_pdf(triangular, 700, 900, 750)
+battery_mass_mc = battery_pdf(triangular, 500, 800, 750)
 fc_mass_mc = fc_mass_pdf(triangular, 1100, 1500, 1300)
 mission_profile_mc = mission_profile_pdf(gauss, 0.34,.07)
 lift_to_drag_mc_L1 = lift_to_drag_pdf(triangular, 0,22,14)
