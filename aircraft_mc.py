@@ -23,7 +23,7 @@ mission_profile_det = params.LANDING_RATIO
 fc_mass_det = params.FCS_MASS
 print("FCS Mass Det: ", fc_mass_det)
 
-fleet = ['F2C4H2L1', 'F1C3H1L2', 'F2C2H1L1', 'F2C3H2L3', 'F1C3H1L3', 'F1C1H2L3', 'F3C5H3L3']#List 
+fleet = ['F2C4H2L1', 'F1C3H1L2', 'F2C2H1L1', 'F2C3H2L3', 'F1C3H1L3', 'F1C1H2L3', 'F1C1H2L2', 'F3C5H3L3']#List 
 det = create_aircrafts(fleet)
 print(det)
 
@@ -121,19 +121,24 @@ aircraft_mc_trl_results = []
 model_results = pd.DataFrame()
 
 hex_mc_h1 = hex_pdf(normalvariate, 600, 10)
-hex_mc_h2 = hex_pdf(normalvariate, 300, 50)
+hex_mc_h2 = hex_pdf(normalvariate, 300, 50) #bigger uncertainties 
 battery_mass_mc = battery_pdf(triangular, 500, 800, 750)
-fc_mass_mc = fc_mass_pdf(triangular, 1100, 1500, 1300)
+fc_mass_mc = fc_mass_pdf(triangular, 1100, 1400, 1300) #optimisitc fc mass decrease over time
 mission_profile_mc = mission_profile_pdf(gauss, 0.34,.07)
-lift_to_drag_mc_L1 = lift_to_drag_pdf(triangular, 0,22,14)
-lift_to_drag_mc_L2 = lift_to_drag_pdf(triangular, 0,18,14)
-lift_to_drag_mc_L3 = lift_to_drag_pdf(triangular, 13.5,14.5,14)
-SFC_hybrid_mc = SFC_hybrid_pdf(triangular, 12, 19, 14.75)
+# lift_to_drag_mc_L1 = lift_to_drag_pdf(triangular, 0,22,14)
+# lift_to_drag_mc_L2 = lift_to_drag_pdf(triangular, 0,18,14)
+lift_to_drag_mc_L1 = lift_to_drag_pdf(triangular, 7,14,12) #Fuselage: more drag, lower L/D 
+lift_to_drag_mc_L2 = lift_to_drag_pdf(triangular, 9,14,13) #Wing: less drag, higher L/D
+#lift_to_drag_mc_L3 = lift_to_drag_pdf(triangular, 13.5,14.5,14)
+lift_to_drag_mc_L3 = lift_to_drag_pdf(gauss, 14,0.2) #more determinisitc - existing design
+SFC_hybrid_mc = SFC_hybrid_pdf(triangular, 11, 16, 14.75) #futurisitc
 f_trl_mc = trl_pdf(triangular, 5,8,6)
 h_trl_mc = trl_pdf(triangular, 7,8,7.5)
-c_trl_mc_hybrid = trl_pdf(triangular, 4,9,6)
+c_trl_mc_hybrid = trl_pdf(triangular, 5,9,6)
 c_trl_mc_electric = trl_pdf(triangular, 3,8,6)
-l_trl_mc = trl_pdf(triangular, 2,7,4)
+l1_trl_mc = trl_pdf(triangular, 2, 5, 4)
+l2_trl_mc = trl_pdf(triangular, 2, 6, 4 )
+#l3_trl_mc = trl_pdf(triangular, 7.5, 8, 7)
 
 #TODO: For L3, do not use uncertainties for Lift to Drag
 
@@ -161,8 +166,8 @@ for key in decisions:
         params.trl["C4"] = c_trl_mc_electric()
         params.trl["H1"] = h_trl_mc()
         params.trl["H2"] = h_trl_mc()
-        params.trl["L1"] = l_trl_mc()
-        params.trl["L2"] = l_trl_mc()
+        params.trl["L1"] = l1_trl_mc()
+        params.trl["L2"] = l2_trl_mc()
 
         #Run Simulations 
         #aircraft_mc_utility_results.append(aircraft_mc.calc_total_utility())
@@ -229,7 +234,7 @@ fig.add_trace(
 
 fig.show()
 
-fig.write_html("tradespace_mc_test_4.html")
+fig.write_html("tradespace_mc_test_ld.html")
 #fig.show()
 
 
