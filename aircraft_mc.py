@@ -47,7 +47,7 @@ def lift_to_drag_pdf(dist, *args):
     for i in range(10000):
         lift_to_drag_distribution.append(lift_to_drag_mc())
     plt.hist(lift_to_drag_distribution,bins=100)
-    plt.xlabel('List to Drag MC')
+    plt.xlabel('Lift to Drag (L/D) MC')
     plt.ylabel('PDF')
     plt.show()
     return lift_to_drag_mc #return a list of RVs
