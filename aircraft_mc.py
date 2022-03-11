@@ -82,8 +82,19 @@ def trl_pdf(dist, *args):
     plt.hist(trl_distribution,bins=100)
     plt.xlabel('TRL MC')
     plt.ylabel('PDF')
-    #plt.show()
+    plt.show()
     return trl_mc
+#%%
+def battery_pdf(dist, *args):
+    battery_mc = Variable(dist, *args)
+    battery_distribution = []
+    for i in range(10000):
+        battery_distribution.append(battery_mc())
+    plt.hist(battery_distribution,bins=100)
+    plt.xlabel('Battery MC')
+    plt.ylabel('PDF')
+    plt.show()
+    return battery_mc
 
 #%%
 #RUN SIMULATIONS
@@ -98,6 +109,7 @@ aircraft_mc_utility_results =[]
 aircraft_mc_trl_results = []
 model_results = pd.DataFrame()
 
+battery_mass_mc = battery_pdf(triangular, 700, 900, 750)
 fc_mass_mc = fc_mass_pdf(triangular, 1100, 1500, 1300)
 mission_profile_mc = mission_profile_pdf(triangular, 0.2, 1, 0.34 )
 lift_to_drag_mc_L1 = lift_to_drag_pdf(triangular, 0,22,14)
@@ -116,7 +128,8 @@ for key in decisions:
 
 
     for i in range(2000):
-        params.FCS_MASS = fc_mass_mc()        
+        params.FCS_MASS = fc_mass_mc()      
+        params.BATTERY_MASS = battery_mass_mc()  
         params.LANDING_RATIO = mission_profile_mc()
         if decisions[key].location == "L1": #L1 and L2
             params.LIFT_TO_DRAG = lift_to_drag_mc_L1()
@@ -151,7 +164,7 @@ for key in decisions:
         model_results = model_results.append(result, ignore_index = True) 
 
 #aircraft_mc_results
-#%%
+
 # %%
 #Plot Uncertainties on the tradespace
 import plotly.express as px
@@ -171,7 +184,7 @@ new_df['Location'] = new_df.Name.str[7:9]
 new_df['Config'] = new_df.Name.str[2:4]
 fig = px.scatter(new_df, x="AVG TRL", y="Total Utility", color = "Name", 
                 hover_name = new_df.Name, template = 'seaborn',
-                marginal_y='violin', marginal_x='box')
+                marginal_y='histogram', marginal_x='box')
 
 fig.update_traces(marker=dict(size=5, opacity = 0.3,
                                 line=dict(width=0.5,
@@ -187,7 +200,7 @@ fig.add_trace(
         x=det['AVG TRL'],
         y=det['Total Utility'],
         marker=dict(
-            color='black',
+            color=['blue', 'orange', 'green', 'red', 'purple', 'brown', 'pink'],
             opacity = 1,
             size=10,
             line=dict(
@@ -201,7 +214,7 @@ fig.add_trace(
 
 fig.show()
 
-fig.write_html("tradespace_mc_test_2.html")
+fig.write_html("tradespace_mc_test_3.html")
 #fig.show()
 
 
