@@ -96,6 +96,17 @@ def battery_pdf(dist, *args):
     plt.show()
     return battery_mc
 
+def hex_pdf(dist, *args):
+    hex_mc = Variable(dist, *args)
+    hex_distribution = []
+    for i in range(10000):
+        hex_distribution.append(hex_mc())
+    plt.hist(hex_distribution,bins=100)
+    plt.xlabel('Heat Exchanger MC')
+    plt.ylabel('PDF')
+    plt.show()
+    return hex_mc
+
 #%%
 #RUN SIMULATIONS
 #SET DISTRIBUTION and PARAMETERS
@@ -109,6 +120,8 @@ aircraft_mc_utility_results =[]
 aircraft_mc_trl_results = []
 model_results = pd.DataFrame()
 
+hex_mc_h1 = hex_pdf(normalvariate, 600, 10)
+hex_mc_h2 = hex_pdf(normalvariate, 300, 50)
 battery_mass_mc = battery_pdf(triangular, 500, 800, 750)
 fc_mass_mc = fc_mass_pdf(triangular, 1100, 1500, 1300)
 mission_profile_mc = mission_profile_pdf(gauss, 0.34,.07)
@@ -128,6 +141,8 @@ for key in decisions:
 
 
     for i in range(2000):
+        params.H1_MASS = hex_mc_h1()
+        params.H2_MASS = hex_mc_h2()
         params.FCS_MASS = fc_mass_mc()      
         params.BATTERY_MASS = battery_mass_mc()  
         params.LANDING_RATIO = mission_profile_mc()
@@ -214,7 +229,7 @@ fig.add_trace(
 
 fig.show()
 
-fig.write_html("tradespace_mc_test_3.html")
+fig.write_html("tradespace_mc_test_4.html")
 #fig.show()
 
 
