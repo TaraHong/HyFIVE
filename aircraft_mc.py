@@ -247,8 +247,8 @@ fig.write_html("tradespace_mc_test_ld_yaxis.html")
 
 
 #%%
-### NOT USED
-det_F2C3H2L3 = det.loc[det['Name'] == 'F3C5H3L3']
+### Plotting PDF and CDF for specific designs (our preferred concept)
+det_F2C3H2L3 = det.loc[det['Name'] == 'F2C3H2L3']
 det_util = det_F2C3H2L3['Total Utility']
 def plot_mc_results(mc_results, x_label):
     plt.hist(mc_results, bins=100, density=True)
@@ -264,7 +264,7 @@ def plot_mc_results(mc_results, x_label):
     plt.legend(loc='lower right')
     plt.show()
 
-model_results_F2C3H2L3 = model_results.loc[model_results['Name'] == 'F3C5H3L3']
+model_results_F2C3H2L3 = model_results.loc[model_results['Name'] == 'F2C3H2L3']
 
 plot_mc_results(model_results_F2C3H2L3["Total Utility"], 'Total_Utility_MC')
 #for key in decisions:
