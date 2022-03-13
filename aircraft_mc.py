@@ -202,16 +202,18 @@ import plotly.graph_objects as go
 new_df = model_results
 new_df['Location'] = new_df.Name.str[7:9]
 new_df['Config'] = new_df.Name.str[2:4]
+#Set the X axis and Y axis range manually without breaking the marginal plots using range_x and range_y
 fig = px.scatter(new_df, x="AVG TRL", y="Total Utility", color = "Name", 
                 hover_name = new_df.Name, template = 'seaborn',
-                marginal_y='histogram', marginal_x='box')
+                marginal_y='histogram', marginal_x='box',  range_x=[3.5, 10.5], range_y = [0.4, 0.9])
 
 fig.update_traces(marker=dict(size=5, opacity = 0.3,
                                 line=dict(width=0.5,
                                         color='DarkSlateGrey')),
                     selector=dict(mode='markers'))
 
-
+#fig.update_xaxes(range=[4, 10.5])
+#fig.update_yaxes(range=[0.4, 0.9])
 # Add scatter trace with deterministic model results
 fig.add_trace(
     go.Scatter(
@@ -234,7 +236,7 @@ fig.add_trace(
 
 fig.show()
 
-fig.write_html("tradespace_mc_test_ld.html")
+fig.write_html("tradespace_mc_test_ld_yaxis.html")
 #fig.show()
 
 
