@@ -250,8 +250,19 @@ fig.write_html("tradespace_mc_test_ld_yaxis.html")
 ### Plotting PDF and CDF for specific designs (our preferred concept)
 det_F2C3H2L3 = det.loc[det['Name'] == 'F2C3H2L3']
 det_util = det_F2C3H2L3['Total Utility']
-def plot_mc_results(mc_results, x_label):
+det_trl = det_F2C3H2L3['AVG TRL']
+
+from scipy.stats import norm
+
+#arr = np.random.normal(size=500)
+#ci = norm(*norm.fit(arr)).interval(0.95)  # fit a normal distribution and get 95% c.i.
+
+def plot_mc_results(mc_results, x_label, det_met):
     plt.hist(mc_results, bins=100, density=True)
+    ci = norm(*norm.fit(mc_results)).interval(0.8) 
+    height, bins, patches = plt.hist(mc_results, bins = 100, density = True, alpha=0.3)
+    plt.vlines(det_met,0, 35, color='k',linestyle='--',label='Deterministic')
+    plt.fill_betweenx([0, height.max()], ci[0], ci[1], color='g', alpha=0.1)    
     plt.xlabel(x_label)
     plt.ylabel('PDF')
     plt.show()
@@ -260,13 +271,15 @@ def plot_mc_results(mc_results, x_label):
     plt.ylabel('CDF')
     plt.vlines(np.array(mc_results).mean(),0,1,color='r',label='Monte Carlo Average')
     plt.scatter(np.median(np.array(mc_results)),0.5,c='r',label='Monte Carlo Median')
-    plt.vlines(det_util,0,1,color='k',linestyle='--',label='Deterministic')
+    plt.vlines(det_met,0,1,color='k',linestyle='--',label='Deterministic')
+    #plt.xlim([4, 9])
     plt.legend(loc='lower right')
     plt.show()
 
 model_results_F2C3H2L3 = model_results.loc[model_results['Name'] == 'F2C3H2L3']
 
-plot_mc_results(model_results_F2C3H2L3["Total Utility"], 'Total_Utility_MC')
+#plot_mc_results(model_results_F2C3H2L3["AVG TRL"], 'AVG TRL', det_trl)
+plot_mc_results(model_results_F2C3H2L3["Total Utility"], 'Total Utility', det_util)
 #for key in decisions:
 #    plot_mc_results(Aircraft('F1C1H1L2'), aircraft_mc_utility_results, 'Total_Utility_MC')
 #    plot_mc_results(Aircraft('F1C1H1L2'), aircraft_mc_trl_results, 'AVG TRL_MC')
