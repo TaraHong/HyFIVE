@@ -299,7 +299,8 @@ class Aircraft():
         if ((config == "C1") or (config == "C2") or (config == "C5")): #Hybrid
             #jet_range = (params.VELOCITY * lift_to_drag_premium * params.LIFT_TO_DRAG * log_weight_jet)/(10**-6 * params.SFC_JET * params.GRAVITY)/1000
             jet_range = (params.VELOCITY * params.LIFT_TO_DRAG/lift_to_drag_premium * log_weight_jet)/(10**-6 * params.SFC_JET * params.GRAVITY)/1000
-            params.LH2_FUEL_RESERVE = 0 
+            #params.LH2_FUEL_RESERVE = 0 
+            LH2_fuel_reserve = 0
         else: #Full Electric
             jet_range = 0
         

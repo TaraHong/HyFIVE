@@ -17,13 +17,14 @@ from main import create_aircrafts, plot_tradespace
 # 4. Fuel Cell mass
 # 5. Reliability
 
-lift_to_drag_det = params.LIFT_TO_DRAG
-SFC_hybrid_det = params.SFC_HYBRID
-mission_profile_det = params.LANDING_RATIO
-fc_mass_det = params.FCS_MASS
-print("FCS Mass Det: ", fc_mass_det)
+# lift_to_drag_det = params.LIFT_TO_DRAG
+# SFC_hybrid_det = params.SFC_HYBRID
+# mission_profile_det = params.LANDING_RATIO
+# fc_mass_det = params.FCS_MASS
+#print("FCS Mass Det: ", fc_mass_det)
 
 fleet = ['F2C4H2L1', 'F1C3H1L2', 'F2C2H1L1', 'F2C3H2L3', 'F1C3H1L3', 'F1C1H2L3', 'F1C1H2L2', 'F3C5H3L3']#List 
+#fleet = ['F2C3H2L3']
 det = create_aircrafts(fleet)
 print(det)
 
@@ -84,7 +85,7 @@ def trl_pdf(dist, *args):
     plt.ylabel('PDF')
     plt.show()
     return trl_mc
-#%%
+
 def battery_pdf(dist, *args):
     battery_mc = Variable(dist, *args)
     battery_distribution = []
@@ -175,7 +176,7 @@ for key in decisions:
         
         #aircraft_mc_utility_results.append(decisions[key].calc_total_utility())
         #aircraft_mc_trl_results.append(decisions[key].calc_AVG_TRL())
-
+      
         result = {'Name':key,
             'Total Utility': decisions[key].calc_total_utility(),
             'AVG TRL': decisions[key].calc_AVG_TRL()                   
@@ -261,10 +262,11 @@ def plot_mc_results(mc_results, x_label, det_met):
     plt.hist(mc_results, bins=100, density=True)
     ci = norm(*norm.fit(mc_results)).interval(0.8) 
     height, bins, patches = plt.hist(mc_results, bins = 100, density = True, alpha=0.3)
-    plt.vlines(det_met,0, 35, color='k',linestyle='--',label='Deterministic')
+    plt.vlines(det_met,0, height.max(), color='red',linestyle='--',label='Deterministic')
     plt.fill_betweenx([0, height.max()], ci[0], ci[1], color='g', alpha=0.1)    
     plt.xlabel(x_label)
     plt.ylabel('PDF')
+    plt.legend(loc = 'lower right')
     plt.show()
     plt.hist(mc_results,bins=1000, density=True,cumulative=True, histtype='step',label = 'Cumulative Distribution')
     plt.xlabel(x_label)
@@ -277,9 +279,9 @@ def plot_mc_results(mc_results, x_label, det_met):
     plt.show()
 
 model_results_F2C3H2L3 = model_results.loc[model_results['Name'] == 'F2C3H2L3']
-
-#plot_mc_results(model_results_F2C3H2L3["AVG TRL"], 'AVG TRL', det_trl)
+#model_results_F2C3H2L3.hist()
 plot_mc_results(model_results_F2C3H2L3["Total Utility"], 'Total Utility', det_util)
+#plot_mc_results(model_results_F2C3H2L3["AVG TRL"], 'AVG TRL', det_trl)
 #for key in decisions:
 #    plot_mc_results(Aircraft('F1C1H1L2'), aircraft_mc_utility_results, 'Total_Utility_MC')
 #    plot_mc_results(Aircraft('F1C1H1L2'), aircraft_mc_trl_results, 'AVG TRL_MC')
